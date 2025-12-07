@@ -92,11 +92,11 @@ user.setAge(15); // Invalid
 List<ValidationResult> errors = ValidationContext.validate(user);
 
 if (!errors.isEmpty()) {
-        for (ValidationResult error : errors) {
+    for (ValidationResult error : errors) {
         System.out.println(error.getMessage());
-        }
-        } else {
-        System.out.println("Data is valid!");
+    }
+} else {
+    System.out.println("Data is valid!");
 }
 ```
 
