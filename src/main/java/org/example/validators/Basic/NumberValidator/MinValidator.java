@@ -1,4 +1,4 @@
-package org.example.concrete.NumberValidator;
+package org.example.validators.Basic.NumberValidator;
 
 import org.example.core.IValidator;
 import org.example.core.ValidatorResult;

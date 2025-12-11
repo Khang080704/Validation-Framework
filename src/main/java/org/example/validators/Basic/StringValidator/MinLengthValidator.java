@@ -1,4 +1,4 @@
-package org.example.concrete.StringValidator;
+package org.example.validators.Basic.StringValidator;
 
 import org.example.core.IValidator;
 import org.example.core.ValidatorResult;

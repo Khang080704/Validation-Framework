@@ -40,7 +40,7 @@ The project is built using pure Java Core (no third-party framework dependencies
 # 📦 Folder Structure
 
 In accordance with submission regulations, the Repository is organized as follows:
-```sybase
+```
 Validation-Framework/
 ├── 1.Documents/         # Project Report, Class Diagrams, Slides
 ├── 2.Source code/       # Source Code (Java Project)
@@ -57,7 +57,7 @@ Validation-Framework/
 
 Clone this repository to your machine and import it into your IDE (Eclipse/IntelliJ/NetBeans) as a Java Project.
 
-```sybase
+```bash
 git clone https://github.com/Khang080704/Validation-Framework.git
 ```
 
@@ -83,7 +83,7 @@ private String username;
 ```
 
 Step 2: Perform Validation.
-```java
+```
 User user = new User();
 user.setUsername("admin");
 user.setAge(15); // Invalid
@@ -103,7 +103,7 @@ if (!errors.isEmpty()) {
 
 
 ## 3. Method 2: Manual Code (Fluent/Manual)
-```java
+```
 // Validate a specific value
 IValidator<String> emailValidator = ValidatorFactory.createEmailValidator();
 ValidationResult result = emailValidator.validate("invalid-email");

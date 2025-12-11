@@ -1,4 +1,4 @@
-package org.example.concrete.regex;
+package org.example.validators.Basic.Regex;
 
 import org.example.core.IValidator;
 import org.example.core.ValidatorResult;
