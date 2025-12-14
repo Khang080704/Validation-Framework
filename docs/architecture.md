@@ -5,36 +5,30 @@
 - Duration: 5 Weeks
 
 ## PART 1: ARCHITECTURE OVERVIEW
-Based on the requirement to utilize at least 4 Design Patterns and ensure extensibility, the system architecture is divided into the following layers and modules:
+Based on the requirement to utilize at least 3 Design Patterns and ensure extensibility, the system architecture is divided into the following layers and modules:
 
 ## 1. High-Level Architecture
-### 1. Configuration Layer (Annotation/Fluent API):
-- Defines Rules on the Object Model.
+### 1. Configuration Layer (Fluent API/Builder):
+- Defines Rules on the data using Builder Pattern with method chaining.
 
-- Uses Java Annotations (@Required, @Email) or Code-based configuration.
-### 2. Core Engine Layer (Creation & Parsing):
-- Uses Reflection to scan Annotations from model classes.
+- Supports String and Number validations through specific builders.
+### 2. Core Engine Layer (Validation Logic):
+- Uses Strategy Pattern to separate validation algorithms.
 
-- Uses Factory/Builder Pattern to initialize corresponding Validators from these annotations.
-### 3. Validation Logic Layer (Strategies):
+- Uses Composite Pattern to group multiple validators for a single field.
+### 3. Validation Execution Layer:
+- ValidatorContext manages validation state and error collection.
 
-- Contains the actual verification algorithms.
-
-- Applies Strategy Pattern to separate validation logic.
-- Applies Composite Pattern to group multiple validators for a single field.
-### 4. Notification Layer (Observer):
-- Listens for validation results.
-- Updates the UI (Swing/JavaFX) via the Observer Pattern.
+- IValidator interface defines the validation contract.
 
 ## 2. Core Design Patterns
-In the report, detailed class diagrams for the following 4 patterns are required:
+In the report, detailed class diagrams for the following 3 patterns are required:
 
 | Design Pattern | Role in Framework |
 |----------------|-------------------|
 | Strategy       | Defines the common IValidator interface. Concrete classes (EmailValidator, RangeValidator) contain specific logic. |
-| Composite| The ValidatorGroup class contains a list of List<IValidator>. Helps check multiple conditions (e.g., both Required and Email).|
-| Observer | The ValidationSubject sends notifications, and IValidationObserver (UI) receives notifications to display errors immediately. |
-| Factory Method | ValidatorFactory creates instances of validators based on the Annotations read from the field. |
+| Composite      | The ValidatorComposite class contains a list of List<IValidator>. Helps check multiple conditions (e.g., both Required and Email).|
+| Builder        | AbstractValidatorBuilder and concrete builders (StringValidatorBuilder, NumberValidatorBuilder) facilitate fluent API for validator construction. |
 
 # PART 2: DETAILED IMPLEMENTATION BY PHASE
 ## Phase 1: Core Framework & Strategy Pattern
@@ -42,32 +36,47 @@ In the report, detailed class diagrams for the following 4 patterns are required
 - Pattern: Strategy.
 ```java
     // 1. Result returned from a validation attempt
-public class ValidationResult {
-    private boolean isValid;
-    private String message;
+public record ValidatorResult(boolean isValid, String message) {
 
-    public ValidationResult(boolean isValid, String message) {
-        this.isValid = isValid;
-        this.message = message;
+    public static ValidatorResult valid() {
+        return new ValidatorResult(true, null);
     }
-    // Getters...
-    public boolean isValid() { return isValid; }
-    public String getMessage() { return message; }
+    public static ValidatorResult invalid(String message) {
+        return new ValidatorResult(false, message);
+    }
 }
 
 // 2. Base Interface (Strategy Interface)
 public interface IValidator<T> {
-    ValidationResult validate(T value);
+    ValidatorResult validate(T value);
+
+    default void validate(ValidatorContext<T> context) {
+        ValidatorResult result = validate(context.getData());
+
+        if(!result.isValid()) {
+            context.addError(result.message());
+        }
+    }
 }
 
-// 3. Concrete Strategy (Example: Check Empty)
-public class RequiredValidator implements IValidator<String> {
+// 3. Concrete Strategy (Example: Email Check)
+public class EmailValidator implements IValidator<String> {
     @Override
-    public ValidationResult validate(String value) {
-        if (value == null || value.trim().isEmpty()) {
-            return new ValidationResult(false, "This field is required.");
-        }
-        return new ValidationResult(true, "");
+    public ValidatorResult validate(String email) {
+        if (!email.contains("@"))
+            return ValidatorResult.invalid(email + " must contain @");
+
+        String[] parts = email.split("@");
+        if (parts.length != 2)
+            return ValidatorResult.invalid(email + " must contain only one @");
+
+        if (!parts[1].contains("."))
+            return ValidatorResult.invalid(email + " must contain .");
+
+        if (email.contains(" "))
+            return ValidatorResult.invalid(email + " must not contain whitespace");
+
+        return ValidatorResult.valid();
     }
 }
 ```
@@ -79,106 +88,119 @@ public class RequiredValidator implements IValidator<String> {
 import java.util.ArrayList;
 import java.util.List;
 
+public interface IValidatorManager<T> extends IValidator<T> {
+    void addValidator(IValidator<T> validator);
+}
+
 // Composite Validator: Contains a list of child validators
-public class ValidatorGroup<T> implements IValidator<T> {
+public class ValidatorComposite<T> implements IValidatorManager<T> {
     private List<IValidator<T>> validators = new ArrayList<>();
 
+    @Override
     public void addValidator(IValidator<T> validator) {
         this.validators.add(validator);
     }
 
     @Override
-    public ValidationResult validate(T value) {
-        // Iterate through all child validators
-        for (IValidator<T> v : validators) {
-            ValidationResult result = v.validate(value);
-            // Fail-fast: Return immediately upon error (or aggregate errors)
+    public ValidatorResult validate(T object) {
+        for (IValidator<T> validator : this.validators) {
+            ValidatorResult result = validator.validate(object);
             if (!result.isValid()) {
-                return result; 
+                return ValidatorResult.invalid(result.message());
             }
         }
-        return new ValidationResult(true, "Success");
+        return ValidatorResult.valid();
     }
 }
 ```
 
-## Phase 3: Reflection & Annotation Support
-- Goal: Support automatic validation setup via data constraint declarations (Annotations).
-- Pattern: Factory / Reflection.
+## Phase 3: Builder Pattern for Fluent API
+- Goal: Provide easy-to-use fluent API for building validator chains.
+- Pattern: Builder.
 ```java
-import java.lang.annotation.*;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+public abstract class AbstractValidatorBuilder<T, B extends AbstractValidatorBuilder<T, B>> {
+    protected IValidatorManager<T> manager = new ValidatorComposite<>();
 
-// 1. Define Annotation
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface Rules {
-    boolean required() default false;
-    int minLength() default 0;
-    String email() default "";
+    protected abstract B self();
+
+    public B require() {
+        manager.addValidator(new RequireValidator<>());
+        return self();
+    }
+
+    public B custom(IValidator<T> validator) {
+        manager.addValidator(validator);
+        return self();
+    }
+
+    public B build() {
+        return self();
+    }
+
+    public void validate(ValidatorContext<T> value) {
+        manager.validate(value);
+    }
+
+    public ValidatorResult validate(T value) {
+        return manager.validate(value);
+    }
 }
 
-// 2. Validation Engine (Using Reflection)
-public class ValidationContext {
-    public static List<ValidationResult> validateObject(Object object) {
-        List<ValidationResult> errors = new ArrayList<>();
-        Class<?> clazz = object.getClass();
-        
-        // Scan all fields of the object
-        for (Field field : clazz.getDeclaredFields()) {
-            field.setAccessible(true);
-            
-            // Check if field has @Rules annotation
-            if (field.isAnnotationPresent(Rules.class)) {
-                Rules rule = field.getAnnotation(Rules.class);
-                Object value = null;
-                try {
-                    value = field.get(object);
-                } catch (IllegalAccessException e) { e.printStackTrace(); }
+public class StringValidatorBuilder extends AbstractValidatorBuilder<String, StringValidatorBuilder> {
+    private StringValidatorBuilder() {}
 
-                // Factory logic: Map rule to validator
-                if (rule.required()) {
-                    IValidator<String> v = new RequiredValidator();
-                    ValidationResult res = v.validate((String) value);
-                    if (!res.isValid()) errors.add(res);
-                }
-                
-                // Logic for other rules (MinLength, Email...)
-                // ...
-            }
-        }
+    @Override
+    protected StringValidatorBuilder self() {
+        return this;
+    }
+
+    public static StringValidatorBuilder builder() {
+        return new StringValidatorBuilder();
+    }
+
+    public StringValidatorBuilder email() {
+        manager.addValidator(new EmailValidator());
+        return self();
+    }
+
+    public StringValidatorBuilder minLength(int minLength) {
+        manager.addValidator(new MinLengthValidator(minLength));
+        return self();
+    }
+
+    // Other methods...
+}
+```
+
+## Phase 4: Validation Context & Execution
+- Goal: Manage validation state and collect errors.
+```java
+public class ValidatorContext<T> {
+    private final T data;
+    private final List<String> errors;
+
+    public ValidatorContext(T data) {
+        this.data = data;
+        this.errors = new ArrayList<>();
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public List<String> getErrors() {
         return errors;
     }
+
+    public void addError(String error) {
+        this.errors.add(error);
+    }
+
+    public boolean hasErrors() {
+        return !errors.isEmpty();
+    }
 }
 ```
-
-## Phase 4: UI Integration & Observer Pattern
-- Goal: Mechanism to notify the user interface when data is invalid.
-- Pattern: Observer.
-```java
-// 1. Observer Interface (UI Component will implement this)
-public interface ValidationListener {
-    void onError(String fieldName, String errorMsg);
-    void onSuccess(String fieldName);
-}
-
-// 2. Subject (Input Management Form)
-public class FormValidator {
-    private List<ValidationListener> listeners = new ArrayList<>();
-
-    public void attach(ValidationListener listener) {
-        listeners.add(listener);
-    }
-
-    private void notifyError(String field, String msg) {
-        for (ValidationListener l : listeners) l.onError(field, msg);
-    }
-
-    // This method is called on Submit button click or Blur event
-    public void performValidation(Object dataModel) {
-        List<ValidationResult> results = ValidationContext.validateObject(dataModel);
         
         if (results.isEmpty()) {
             // Logic success
@@ -197,9 +219,9 @@ public class FormValidator {
 - Goal: Create Custom Validations easily and build a demo app.
 
 - Tasks:
-  - Create a User class with annotated fields.
-  - Create a Java Swing/JavaFX interface.
-  - Experiment with creating a PasswordMatchValidator (checking if re-entered password matches).
+  - Create custom validators by implementing IValidator.
+  - Use builders to chain validations.
+  - Build a console demo application.
 
 # PART 3: REPORT & SUBMISSION REQUIREMENTS
 According to the "General Regulations," the team needs to prepare the report content in parallel with coding.
@@ -213,7 +235,7 @@ Create this folder structure in advance to avoid last-minute errors:
 ## 2. Mandatory Report Content
 The report must include the following sections:
 ### 1. Class Diagram: For the entire framework.
-### 2. Design Pattern Explanation (Important - Minimum 4 patterns):
+### 2. Design Pattern Explanation (Important - Minimum 3 patterns):
    - Pattern Name.
    - Class diagram corresponding to each pattern (Extract from the general diagram).
    - Code snippets using the pattern (Copy code from Phases 1-4).
