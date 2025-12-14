@@ -1,10 +1,15 @@
 package org.example;
 
 
+import org.example.builder.NumberValidatorBuilder;
 import org.example.builder.StringValidatorBuilder;
-import org.example.core.IValidatorManager;
+import org.example.core.ValidatorContext;
 import org.example.core.ValidatorResult;
+import org.example.validators.Basic.NumberValidator.RangeValidator;
+import org.example.validators.Basic.Regex.RegexValidator;
+import org.example.validators.Composite.ValidatorComposite;
 
+import java.util.List;
 import java.util.Scanner;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -19,13 +24,28 @@ public class Main {
         System.out.println("please enter your password:");
         String password = sc.next();
 
-        IValidatorManager<String> manager =
+        StringValidatorBuilder manager =
                 StringValidatorBuilder.builder()
+                                .require()
                                 .minLength(8)
                                 .upperCase()
+                                .email()
+                                .custom(new RegexValidator("asd"))
                                 .build();
+        ValidatorContext<String> context = new ValidatorContext<>(password);
+        manager.validate(context);
+        if(context.hasErrors()) {
+            List<String> errors = context.getErrors();
+            for (String error : errors) {
+                System.out.println(error);
+            }
+        }
+        else {
+            System.out.println(password);
+        }
 
-        ValidatorResult passwordResult = manager.validate(password);
+
+
         sc.close();
     }
 }

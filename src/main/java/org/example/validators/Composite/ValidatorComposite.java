@@ -2,6 +2,7 @@ package org.example.validators.Composite;
 
 import org.example.core.IValidator;
 import org.example.core.IValidatorManager;
+import org.example.core.ValidatorContext;
 import org.example.core.ValidatorResult;
 
 import java.util.ArrayList;
@@ -26,4 +27,12 @@ public class ValidatorComposite<T> implements IValidatorManager<T> {
         }
         return ValidatorResult.valid();
     }
+
+    @Override
+    public void validate(ValidatorContext<T> context) {
+        for (IValidator<T> validator : this.validators) {
+            validator.validate(context);
+        }
+    }
+
 }
