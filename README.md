@@ -2,6 +2,7 @@
 
 ## Course Project: Design Patterns
 
+
 # 📖 Introduction
 
 Java Validation Framework is a lightweight, open-source library designed to assist developers in validating data within Java applications (Swing, JavaFX, Console, etc.).
@@ -10,7 +11,9 @@ This project is inspired by Hibernate Validator and jQuery Validation, with the 
 
 # 🚀 Key Features
 
-- Fluent API: Support validation configuration via method chaining using Builder Pattern.
+- Annotation Support: Define data constraints directly on the Model using Annotations (e.g., @Required, @Email, @Min, @Max).
+
+- Fluent API: Support validation configuration via method chaining.
 
 - Composite Validation: Combine multiple validation rules for a single data field.
 
@@ -18,17 +21,21 @@ This project is inspired by Hibernate Validator and jQuery Validation, with the 
 
 - Regex Support: Support complex pattern matching using Regular Expressions.
 
+- UI Integration: Automatic error notification mechanism for the User Interface (Observer Pattern).
+
 - Extensibility: Loosely coupled architecture, allowing easy addition of new rules without modifying core code.
 
 # 🛠️ Technology & Design Patterns
 
-The project is built using pure Java Core (no third-party framework dependencies) and implements at least 3 GoF Design Patterns:
+The project is built using pure Java Core (no third-party framework dependencies) and implements at least 4 GoF Design Patterns:
 
-- Strategy Pattern: Defines the common IValidator interface. Concrete classes contain specific validation logic.
+- Strategy Pattern: Handles different validation algorithms (Email, Range, Null check, etc.).
 
 - Composite Pattern: Groups and manages multiple validators on a single object.
 
-- Builder Pattern: Facilitates the construction of complex validator chains through fluent API.
+- Observer Pattern: Listens for data changes and updates error notifications on the UI.
+
+- Factory Method / Singleton: Manages the initialization and provision of Validator instances.
 
 # 📦 Folder Structure
 
@@ -41,6 +48,9 @@ Validation-Framework/
 └── 4.Others/            # Demo Video, executable setup file (if any)
 ```
 
+
+
+
 # ⚡ Quick Start & Usage
 
 ## 1. Installation
@@ -51,69 +61,74 @@ Clone this repository to your machine and import it into your IDE (Eclipse/Intel
 git clone https://github.com/Khang080704/Validation-Framework.git
 ```
 
-## 2. Method 1: Using Fluent API (Builder Pattern)
 
-### String Validation
+## 2. Method 1: Using Annotations (Recommended)
+
+Step 1: Add Annotations to your Java Model (POJO).
 ```java
-StringValidatorBuilder builder = StringValidatorBuilder.builder()
-    .require()
-    .minLength(8)
-    .maxLength(20)
-    .upperCase()
-    .email()
-    .custom(new RegexValidator("custom_pattern"))
-    .build();
+public class User {
+@Required(message = "Username cannot be empty")
+@Length(min = 6, max = 20)
+private String username;
 
-ValidatorContext<String> context = new ValidatorContext<>("input_value");
-builder.validate(context);
+    @Required
+    @Email(message = "Invalid email format")
+    private String email;
 
-if (context.hasErrors()) {
-    List<String> errors = context.getErrors();
-    for (String error : errors) {
-        System.out.println(error);
+    @Range(min = 18, max = 100)
+    private int age;
+    
+    // Getters and Setters...
+}
+```
+
+Step 2: Perform Validation.
+```
+User user = new User();
+user.setUsername("admin");
+user.setAge(15); // Invalid
+
+// Call Validation Context
+List<ValidationResult> errors = ValidationContext.validate(user);
+
+if (!errors.isEmpty()) {
+    for (ValidationResult error : errors) {
+        System.out.println(error.getMessage());
     }
 } else {
     System.out.println("Data is valid!");
 }
 ```
 
-### Number Validation
-```java
-NumberValidatorBuilder<Integer> builder = NumberValidatorBuilder.builder()
-    .min(0)
-    .max(100)
-    .range(10, 90)
-    .build();
 
-ValidatorContext<Integer> context = new ValidatorContext<>(50);
-builder.validate(context);
 
-if (context.hasErrors()) {
-    // Handle errors
+## 3. Method 2: Manual Code (Fluent/Manual)
+```
+// Validate a specific value
+IValidator<String> emailValidator = ValidatorFactory.createEmailValidator();
+ValidationResult result = emailValidator.validate("invalid-email");
+
+if (!result.isValid()) {
+    System.out.println("Error: " + result.getMessage());
 }
 ```
 
-## 3. Creating Custom Validators
+
+
+## 4. Creating Custom Validators
 
 You can define a new rule by implementing the IValidator interface:
 
 ```java
 public class ZipCodeValidator implements IValidator<String> {
     @Override
-    public ValidatorResult validate(String value) {
+    public ValidationResult validate(String value) {
         if (value != null && value.matches("\\d{5}")) {
-            return ValidatorResult.valid();
+            return new ValidationResult(true, "");
         }
-        return ValidatorResult.invalid("Zip code must contain 5 digits");
+        return new ValidationResult(false, "Zip code must contain 5 digits");
     }
 }
-```
-
-Then use it in the builder:
-```java
-StringValidatorBuilder.builder()
-    .custom(new ZipCodeValidator())
-    .build();
 ```
 
 # 📄 License

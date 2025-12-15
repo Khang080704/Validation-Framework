@@ -2,7 +2,7 @@
 
 **Project Overview:**
 * **Topic:** Build a custom Validation Framework[cite: 2, 7].
-* **Language:** Java (utilizing Builder Pattern & Design Patterns)[cite: 25].
+* **Language:** Java (utilizing Annotations & Reflection)[cite: 25].
 * [cite_start]**Team Size:** 3 Members (M1, M2, M3)[cite: 9].
 * **Duration:** 5 Weeks.
 * [cite_start]**Goal:** Achieve maximum score (2.5 pts) with a complete report, source code, and demo[cite: 37, 38, 39].
@@ -14,10 +14,11 @@
 ### Week 1: Analysis & Design Architecture
 **Goal:** Finalize Design Patterns and create the skeletal Class Diagram.
 * [cite_start]**Requirement Analysis:** Define basic validator operations (Notification mechanism, aggregation, UI display)[cite: 12, 13, 14, 15].
-* [cite_start]**Design Pattern Selection (Min 3 Patterns)[cite: 10]:**
+* [cite_start]**Design Pattern Selection (Min 4 Patterns)[cite: 10]:**
     1.  **Strategy Pattern:** To define various validation algorithms (Email, Phone, Range).
     2.  [cite_start]**Composite Pattern:** To combine multiple validations for a single data field[cite: 20].
-    3.  [cite_start]**Builder Pattern:** To facilitate validation setup via fluent API[cite: 16].
+    3.  [cite_start]**Observer Pattern:** To notify the UI when data is invalid[cite: 13].
+    4.  [cite_start]**Factory Method / Builder Pattern:** To facilitate validation setup via code[cite: 16].
 * [cite_start]**Output:** Preliminary Class Diagram[cite: 44].
 
 ### Week 2: Build Core Framework (Validator Engine)
@@ -27,17 +28,18 @@
 * [cite_start]Build a library of basic validators: `StringEmptyValidator`, `NumberRangeValidator`[cite: 21].
 * [cite_start]Implement **Composite Pattern** to group validators (Validation Chain)[cite: 20].
 
-### Week 3: Advanced Features (Builder Pattern & Custom Validation)
-**Goal:** Implement Builder Pattern for fluent API and enable custom validations.
-* [cite_start]Create AbstractValidatorBuilder and concrete builders (StringValidatorBuilder, NumberValidatorBuilder)[cite: 16].
-* [cite_start]Implement fluent API with method chaining[cite: 17].
+### Week 3: Advanced Features (Annotations & Reflection)
+**Goal:** Support automatic validation via Java Annotations and Custom Validation.
+* [cite_start]Create Java Annotations: `@Required`, `@Email`, `@Min`, `@Max`[cite: 19].
+* [cite_start]Implement `ValidationContext` using **Java Reflection** to scan object fields and trigger constraints[cite: 25].
+* [cite_start]Integrate Regular Expression support[cite: 22].
 * [cite_start]Enable creation of **Custom Validations**[cite: 23, 29].
 
-### Week 4: Integration & Demo
-**Goal:** Finalize the framework and build the Demo App.
-* [cite_start]Implement ValidatorContext for error management[cite: 14].
-* Develop the Demo Application (Console-based).
-* [cite_start]Test framework with various data types and custom validators[cite: 15].
+### Week 4: UI Integration & Error Handling
+**Goal:** Display error messages and finalize the Demo App.
+* [cite_start]Implement error aggregation logic (`ValidationResult`)[cite: 14].
+* Develop the Demo Application (Java Swing or JavaFX).
+* [cite_start]Integrate **Observer Pattern**: Visual feedback on the UI (e.g., changing text color) when validation fails[cite: 15].
 * [cite_start]Implement "Code-based Validation" setup[cite: 16, 17].
 
 ### Week 5: Packaging, Reporting & Demo Recording
@@ -57,10 +59,10 @@
 
 | Week | General Tasks | Member 1 (M1) | Member 2 (M2) | Member 3 (M3) |
 | :--- | :--- | :--- | :--- | :--- |
-| **W1** | Team meeting, Pattern selection | - [cite_start]Design `Validator` Interface.<br>- Draw General Class Diagram[cite: 43]. | - [cite_start]List required rules (email, phone...).<br>- Research Regex integration[cite: 22]. | - Setup Java Project structure.<br>- Research Builder Pattern for fluent API. |
-| **W2** | Code Core Framework | - Implement **Strategy** & **Composite Pattern**.<br>- Write `ValidatorContext`. | - [cite_start]Code `StringValidator`, `IntValidator`[cite: 26].<br>- Code `RegexValidator`. | - [cite_start]Design `ValidatorResult` class.<br>- Code `ValidatorComposite`[cite: 20]. |
-| **W3** | Code Advanced Features | - [cite_start]Implement **Builder Pattern** for fluent API[cite: 16].<br>- Create Builder classes. | - [cite_start]Code **Custom Validator** feature[cite: 23].<br>- Write Unit Tests for logic. | - Build error collection in ValidatorContext.<br>- Start building the Demo Form. |
-| **W4** | Integration & Demo | - [cite_start]Code Review, optimize inheritance/extensibility[cite: 32].<br>- Assist M3 with demo integration. | - Add complex rules (e.g., Password match).<br>- Test framework with various data types. | - [cite_start]Finalize Demo App (Console).<br>- Implement error display[cite: 15]. |
+| **W1** | Team meeting, Pattern selection | - [cite_start]Design `Validator` Interface.<br>- Draw General Class Diagram[cite: 43]. | - [cite_start]List required rules (email, phone...).<br>- Research Regex integration[cite: 22]. | - Setup Java Project structure.<br>- Research Java Swing/JavaFX for UI. |
+| **W2** | Code Core Framework | - Implement **Strategy** & **Composite Pattern**.<br>- Write `ValidationManager`. | - [cite_start]Code `StringValidator`, `IntValidator`[cite: 26].<br>- Code `RegexValidator`. | - [cite_start]Design `ValidationMessage` class.<br>- Code `MessageAggregator`[cite: 14]. |
+| **W3** | Code Advanced Features | - [cite_start]Implement **Java Reflection** to read Annotations[cite: 25].<br>- Create Annotation Interfaces. | - [cite_start]Code **Custom Validator** feature[cite: 23].<br>- Write Unit Tests for logic. | - Build **Observer Pattern** for validation events.<br>- Start building the Demo Form. |
+| **W4** | Integration & Demo | - [cite_start]Code Review, optimize inheritance/extensibility[cite: 32].<br>- Assist M3 with UI integration. | - Add complex rules (e.g., Password match).<br>- Test framework with various data types. | - [cite_start]Finalize Demo App (Register, Login).<br>- Implement UI Error display[cite: 15]. |
 | **W5** | Finalize | - [cite_start]Write "Pattern Explanation" section in Report [cite: 46][cite_start].<br>- Check folder structure[cite: 62]. | - [cite_start]Record Demo Video [cite: 59][cite_start].<br>- Write User Guide/Setup Guide[cite: 56, 57]. | - [cite_start]Finalize detailed Class Diagram.<br>- Compile Report, create Zip file[cite: 68]. |
 
 ---
@@ -76,4 +78,4 @@
     * [cite_start]`4.Others`: Video Demo, Setup file[cite: 67, 59].
 * [cite_start]**Archive:** Compress the folder into `MSSV1-MSSV2-MSSV3.zip`[cite: 68].
 
-[cite_start]**Note:** The framework must ensure **extensibility** and **inheritance** to easily add new validations[cite: 32]. The implementation uses **Strategy**, **Composite**, and **Builder** patterns for flexibility.
+[cite_start]**Note:** The framework must ensure **extensibility** and **inheritance** to easily add new validations[cite: 32].
