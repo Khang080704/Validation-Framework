@@ -1,51 +1,50 @@
 package org.example;
 
 
-import org.example.builder.NumberValidatorBuilder;
+import org.example.annotations.Max;
+import org.example.annotations.Min;
+import org.example.annotations.Size;
 import org.example.builder.StringValidatorBuilder;
 import org.example.core.ValidatorContext;
 import org.example.core.ValidatorResult;
-import org.example.validators.Basic.NumberValidator.RangeValidator;
 import org.example.validators.Basic.Regex.RegexValidator;
-import org.example.validators.Composite.ValidatorComposite;
 
+import javax.xml.validation.Validator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+class User {
+    @Min(value = 4)
+    private String name;
+
+    @Size(min = 4, max = 10)
+    private int age;
+
+    public User(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+}
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
+
     static void main() {
         //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
         // to see how IntelliJ IDEA suggests fixing it.
 
-        Scanner sc = new Scanner(System.in);
-
-        System.out.println("please enter your password:");
-        String password = sc.next();
-
-        StringValidatorBuilder manager =
-                StringValidatorBuilder.builder()
-                                .require()
-                                .minLength(8)
-                                .upperCase()
-                                .email()
-                                .custom(new RegexValidator("asd"))
-                                .build();
-        ValidatorContext<String> context = new ValidatorContext<>(password);
-        manager.validate(context);
-        if(context.hasErrors()) {
-            List<String> errors = context.getErrors();
-            for (String error : errors) {
-                System.out.println(error);
-            }
+        User user = new User("khang", 21);
+        List<ValidatorResult> result = ValidatorContext.validateObject(user);
+        if(result.isEmpty()) {
+            System.out.println("user valid");
         }
         else {
-            System.out.println(password);
+            for (ValidatorResult validatorResult : result) {
+                System.out.println(validatorResult.message());
+            }
         }
 
-
-
-        sc.close();
     }
 }
