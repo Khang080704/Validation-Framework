@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 public class MinAnnotationValidator implements AnnotationValidator<Min> {
     @Override
     public ValidatorResult validate(Min annotation, Object value, Field field) {
-        int min = annotation.value();
+        long min = annotation.value();
         String message = annotation.message();
 
         if(value == null) return ValidatorResult.valid();
