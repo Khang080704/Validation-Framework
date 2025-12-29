@@ -6,6 +6,9 @@ import org.example.core.ValidatorResult;
 public class EmailValidator implements IValidator<String> {
     @Override
     public ValidatorResult validate(String email) {
+        if(email == null) {
+            return ValidatorResult.valid();
+        }
         if (!email.contains("@"))
             return ValidatorResult.invalid(email + " must contain @");
 

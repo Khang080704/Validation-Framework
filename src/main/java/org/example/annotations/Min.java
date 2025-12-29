@@ -8,6 +8,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Min {
-    int value() default 0;
+    long value() default 0;
     String message() default "";
 }

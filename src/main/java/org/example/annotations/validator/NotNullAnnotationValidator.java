@@ -6,11 +6,16 @@ import org.example.core.ValidatorResult;
 
 import java.lang.reflect.Field;
 
-public class NotNullValidator implements AnnotationValidator<NotNull> {
+public class NotNullAnnotationValidator implements AnnotationValidator<NotNull> {
 
     @Override
     public ValidatorResult validate(NotNull annotation, Object value, Field field) {
-        if(value == null){
+        String message = annotation.message();
+
+        if(value == null && !message.isEmpty()){
+            return ValidatorResult.invalid(message);
+        }
+        if (value == null) {
             return ValidatorResult.invalid(field.getName() + " must not be null");
         }
         return ValidatorResult.valid();

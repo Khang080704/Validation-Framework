@@ -584,7 +584,7 @@ public class Main {
         private Double price;
 
         @NotEmpty
-        @Pattern(regex = "^[A-Z]{4}-\\d{3}$")  // Format: PROD-001
+        @Pattern(regex = "^[A-Z]{4}-\\d{3}$", message = "asd")  // Format: PROD-001
         private String sku;
 
         public Product(String name, Double price, String sku) {
