@@ -1,11 +1,13 @@
 package org.example.annotations.core;
 
-import org.example.annotations.Max;
-import org.example.annotations.Min;
-import org.example.annotations.NotNull;
-import org.example.annotations.validator.MaxValidator;
-import org.example.annotations.validator.MinValidator;
-import org.example.annotations.validator.NotNullValidator;
+import org.example.annotations.*;
+import org.example.annotations.validator.*;
+import org.example.annotations.validator.number.MaxAnnotationValidator;
+import org.example.annotations.validator.number.MinAnnotationValidator;
+import org.example.annotations.validator.string.EmailAnnotationValidator;
+import org.example.annotations.validator.string.NotEmptyAnnotationValidator;
+import org.example.annotations.validator.string.PatternAnnotationValidator;
+import org.example.annotations.validator.string.SizeAnnotationValidator;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -18,9 +20,13 @@ public class ValidatorRegistry {
                 > registry = new HashMap<>();
 
     static {
-        register(NotNull.class, new NotNullValidator());
-        register(Min.class, new MinValidator());
-        register(Max.class, new MaxValidator());
+        register(Email.class, new EmailAnnotationValidator());
+        register(Max.class, new MaxAnnotationValidator());
+        register(Min.class, new MinAnnotationValidator());
+        register(NotEmpty.class, new NotEmptyAnnotationValidator());
+        register(NotNull.class, new NotNullAnnotationValidator());
+        register(Pattern.class, new PatternAnnotationValidator());
+        register(Size.class, new SizeAnnotationValidator());
     }
 
     public static <A extends Annotation> void register(
