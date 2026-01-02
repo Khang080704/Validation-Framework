@@ -2,11 +2,9 @@ package org.example.validators;
 
 import org.example.config.Config;
 import org.example.config.NotNullConfig;
-import org.example.constraints.NotNull;
 import org.example.validators.constraintvalidators.ConstraintValidator;
 import org.example.validators.constraintvalidators.NotNullValidator;
 
-import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 

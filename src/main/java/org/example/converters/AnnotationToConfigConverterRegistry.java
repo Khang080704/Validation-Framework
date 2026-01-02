@@ -1,6 +1,6 @@
 package org.example.converters;
 
-import org.example.constraints.NotNull;
+import org.example.constraints.annotation.NotNull;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;

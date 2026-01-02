@@ -2,9 +2,7 @@ package org.example.converters;
 
 import org.example.config.Config;
 import org.example.config.NotNullConfig;
-import org.example.constraints.NotNull;
-
-import java.lang.annotation.Annotation;
+import org.example.constraints.annotation.NotNull;
 
 public class NotNullToConfigConverter implements AnnotationToConfigConverter<NotNull>{
 

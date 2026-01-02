@@ -1,7 +1,6 @@
 package org.example.validators.constraintvalidators;
 
 import org.example.config.NotNullConfig;
-import org.example.constraints.NotNull;
 
 
 public class NotNullValidator implements ConstraintValidator<NotNullConfig, Object> {

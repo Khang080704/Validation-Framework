@@ -1,6 +1,6 @@
 package org.example.entities;
 
-import org.example.constraints.NotNull;
+import org.example.constraints.annotation.NotNull;
 
 public class Credential {
     @NotNull(message = "Username must not be null")
