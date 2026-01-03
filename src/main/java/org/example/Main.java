@@ -23,7 +23,7 @@ public class Main {
                 annotationConfigProvider,
                 programmaticConfigProvider
         ));
-        Validator validator = new Validator(configProvider);
+        Validator validator = new Validator(configProvider, null);
 
         Credential credential = new Credential();
         credential.setUsername("username");

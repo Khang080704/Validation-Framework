@@ -1,6 +1,7 @@
 package org.example.validators;
 
 import org.example.common.FieldConfig;
+import org.example.common.IConstraintViolationNotifier;
 import org.example.common.ValidationViolation;
 import org.example.config.Config;
 import org.example.configproviders.ConfigProvider;
@@ -10,9 +11,14 @@ import java.util.*;
 
 public class Validator implements IValidator {
     private final ConfigProvider configProvider;
+    private final IConstraintViolationNotifier notifier;
 
-    public Validator(ConfigProvider configProvider) {
+    public Validator(
+        ConfigProvider configProvider,
+        IConstraintViolationNotifier notifier
+    ) {
         this.configProvider = configProvider;
+        this.notifier = notifier;
     }
 
     @Override
@@ -70,6 +76,12 @@ public class Validator implements IValidator {
             return violation;
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void notifyViolation(ValidationViolation violation) {
+        if (notifier != null && violation.isViolated()) {
+            notifier.display(violation);
         }
     }
 }
