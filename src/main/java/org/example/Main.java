@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.common.ValidationViolation;
 import org.example.configproviders.AnnotationConfigProvider;
 import org.example.configproviders.CachedConfigProvider;
 import org.example.configproviders.ConfigProvider;
@@ -27,8 +28,8 @@ public class Main {
         Credential credential = new Credential();
         credential.setUsername("username");
 
-        Map<String, List<String>> violations = validator.validate(credential);
-        System.out.println(violations);
+        ValidationViolation violations = validator.validate(credential);
+        System.out.println(violations.getViolations());
 
         /*-------------------------------------------------------------------------*/
 
@@ -42,7 +43,12 @@ public class Main {
         User user = new User();
         user.setFirstName("firstName");
         user.setMiddleName("middleName");
-        Map<String, List<String>> userViolations = validator.validate(user);
-        System.out.println(userViolations);
+        ValidationViolation userViolations = validator.validate(user);
+        System.out.println(userViolations.getViolations());
+
+        /*-------------------------------------------------------------------------*/
+
+        ValidationViolation lastnameViolations = validator.validateProperty(user, "lastName");
+        System.out.println(lastnameViolations.getViolations());
     }
 }

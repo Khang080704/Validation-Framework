@@ -1,8 +1,8 @@
 package org.example.validators;
 
-import java.util.Map;
-import java.util.List;
+import org.example.common.ValidationViolation;
 
 public interface IValidator {
-    Map<String, List<String>> validate(Object object);
+    ValidationViolation validate(Object object);
+    ValidationViolation validateProperty(Object object, String property);
 }
