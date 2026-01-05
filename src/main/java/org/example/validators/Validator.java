@@ -68,6 +68,7 @@ public class Validator implements IValidator {
 
             for (Config config: fieldConfig.getConfigs()) {
                 ConstraintValidator validator = ValidatorRegistry.get(config.getClass()).getDeclaredConstructor().newInstance();
+                validator.initialize(config);
                 if (!validator.isValid(value)) {
                     violation.add(config.message());
                 }

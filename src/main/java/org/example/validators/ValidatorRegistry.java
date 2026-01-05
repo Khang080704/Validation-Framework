@@ -1,9 +1,7 @@
 package org.example.validators;
 
-import org.example.config.Config;
-import org.example.config.NotNullConfig;
-import org.example.validators.constraintvalidators.ConstraintValidator;
-import org.example.validators.constraintvalidators.NotNullValidator;
+import org.example.config.*;
+import org.example.validators.constraintvalidators.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +11,12 @@ public class ValidatorRegistry {
 
     static {
         register(NotNullConfig.class, NotNullValidator.class);
+        register(EmailConfig.class, EmailValidator.class);
+        register(MaxConfig.class, MaxValidator.class);
+        register(MinConfig.class, MinValidator.class);
+        register(NotEmptyConfig.class, NotEmptyValidator.class);
+        register(PatternConfig.class, PatternValidator.class);
+        register(SizeConfig.class, SizeValidator.class);
     }
 
     public static void register(Class<? extends Config> config, Class<? extends ConstraintValidator<? extends Config, ?>> validator) {

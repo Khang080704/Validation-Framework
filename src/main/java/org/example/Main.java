@@ -1,15 +1,20 @@
 package org.example;
 
 import org.example.common.ValidationViolation;
+import org.example.config.EmailConfig;
 import org.example.configproviders.AnnotationConfigProvider;
 import org.example.configproviders.CachedConfigProvider;
 import org.example.configproviders.ConfigProvider;
 import org.example.configproviders.ProgrammaticConfigProvider;
 import org.example.constraintbuilder.ConstraintBuilder;
+import org.example.constraints.definition.EmailDefinition;
+import org.example.constraints.definition.MaxDefinition;
 import org.example.constraints.definition.NotNullDefinition;
 import org.example.entities.Credential;
 import org.example.entities.User;
 import org.example.validators.Validator;
+import org.example.validators.ValidatorRegistry;
+import org.example.validators.constraintvalidators.EmailValidator;
 
 import java.util.List;
 import java.util.Map;
@@ -27,12 +32,12 @@ public class Main {
 
         Credential credential = new Credential();
         credential.setUsername("username");
+        credential.setAge(null);
 
         ValidationViolation violations = validator.validate(credential);
         System.out.println(violations.getViolations());
 
         /*-------------------------------------------------------------------------*/
-
         ConstraintBuilder builder = new ConstraintBuilder(programmaticConfigProvider);
         builder
             .on(User.class)
@@ -43,6 +48,8 @@ public class Main {
         User user = new User();
         user.setFirstName("firstName");
         user.setMiddleName("middleName");
+        user.setEmail("email");
+
         ValidationViolation userViolations = validator.validate(user);
         System.out.println(userViolations.getViolations());
 
