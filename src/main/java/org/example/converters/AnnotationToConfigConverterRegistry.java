@@ -1,6 +1,6 @@
 package org.example.converters;
 
-import org.example.constraints.annotation.NotNull;
+import org.example.constraints.annotation.*;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -11,6 +11,12 @@ public class AnnotationToConfigConverterRegistry {
 
     static {
         register(NotNull.class, new NotNullToConfigConverter());
+        register(Email.class, new EmailToConfigConverter());
+        register(Max.class, new MaxToConfigConverter());
+        register(Min.class, new MinToConfigConverter());
+        register(NotEmpty.class, new NotEmptyToConfigConverter());
+        register(Pattern.class, new PatternToConfigConverter());
+        register(Size.class, new SizeToConfigConverter());
     }
 
     public static <A extends Annotation> void register(Class<? extends Annotation> annotation, AnnotationToConfigConverter<A> converter) {
