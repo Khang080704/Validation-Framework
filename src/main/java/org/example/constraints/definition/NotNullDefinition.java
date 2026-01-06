@@ -1,12 +1,18 @@
 package org.example.constraints.definition;
 
-import org.example.config.Config;
-import org.example.config.NotNullConfig;
+import org.example.constraints.annotation.NotNull;
+
+import java.util.Map;
 
 public class NotNullDefinition extends ConstraintDefinition{
+    public NotNullDefinition() {
+        this.annotationType = NotNull.class;
+    }
 
     @Override
-    public Config getConfig() {
-        return new NotNullConfig(this.message);
+    public Map<String, Object> getAttributes() {
+        return Map.of(
+            "message", message
+        );
     }
 }

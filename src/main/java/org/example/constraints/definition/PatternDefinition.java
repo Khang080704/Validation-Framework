@@ -1,20 +1,26 @@
 package org.example.constraints.definition;
 
-import org.example.config.Config;
-import org.example.config.PatternConfig;
+import org.example.constraints.annotation.Pattern;
+
+import java.util.Map;
 
 public class PatternDefinition extends ConstraintDefinition{
-    private final String regex;
-    public PatternDefinition(String regex) {
+    private String regex;
+
+    public PatternDefinition() {
+        this.annotationType = Pattern.class;
+    }
+
+    public PatternDefinition regex(String regex) {
         this.regex = regex;
+        return this;
     }
 
     @Override
-    public Config getConfig() {
-        return new PatternConfig(this.message, this.regex);
-    }
-
-    public String getRegex() {
-        return regex;
+    public Map<String, Object> getAttributes() {
+        return Map.of(
+            "message", message,
+            "regex", regex
+        );
     }
 }

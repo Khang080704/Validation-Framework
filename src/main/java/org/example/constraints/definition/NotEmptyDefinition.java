@@ -1,11 +1,18 @@
 package org.example.constraints.definition;
 
-import org.example.config.Config;
-import org.example.config.NotEmptyConfig;
+import org.example.constraints.annotation.NotEmpty;
+
+import java.util.Map;
 
 public class NotEmptyDefinition extends ConstraintDefinition{
+    public NotEmptyDefinition() {
+        this.annotationType = NotEmpty.class;
+    }
+
     @Override
-    public Config getConfig() {
-        return new NotEmptyConfig(this.message);
+    public Map<String, Object> getAttributes() {
+        return Map.of(
+            "message", message
+        );
     }
 }
