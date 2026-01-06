@@ -15,7 +15,7 @@ public class PatternValidator extends ConstraintValidator<String>{
 
     @Override
     public String validate (String value) {
-        if (value != null && pattern.matcher(value).matches()) {
+        if (value != null && !pattern.matcher(value).matches()) {
             return message;
         }
         return null;

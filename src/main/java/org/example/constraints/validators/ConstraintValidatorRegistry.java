@@ -23,21 +23,17 @@ public class ConstraintValidatorRegistry {
     public static ConstraintValidator<?> getInstance(Class<? extends Annotation> annotationType, Class<?> fieldType) {
         if (registry.containsKey(annotationType)) {
             Map<Class<?>, Class<? extends ConstraintValidator<?>>> validators = registry.get(annotationType);
+            Class<?> wrappedFieldType = getWrapperType(fieldType);
 
-            if (validators.containsKey(fieldType)) {
-                return createInstance(validators.get(fieldType));
+            if (validators.containsKey(wrappedFieldType)) {
+                return createInstance(validators.get(wrappedFieldType));
             }
 
             for (Map.Entry<Class<?>, Class<? extends ConstraintValidator<?>>> entry : validators.entrySet()) {
                 Class<?> registeredType = entry.getKey();
-                if (registeredType.isAssignableFrom(fieldType)) {
+                if (registeredType.isAssignableFrom(wrappedFieldType)) {
                     return createInstance(entry.getValue());
                 }
-            }
-
-            Class<?> wrapperType = getWrapperType(fieldType);
-            if (wrapperType != null && validators.containsKey(wrapperType)) {
-                return createInstance(validators.get(wrapperType));
             }
         }
 
@@ -62,8 +58,8 @@ public class ConstraintValidatorRegistry {
         }
     }
 
-    private static Class<?> getWrapperType(Class<?> primitiveType) {
-        return switch (primitiveType.getName()) {
+    private static Class<?> getWrapperType(Class<?> type) {
+        return switch (type.getName()) {
             case "int" -> Integer.class;
             case "long" -> Long.class;
             case "double" -> Double.class;
@@ -72,7 +68,7 @@ public class ConstraintValidatorRegistry {
             case "byte" -> Byte.class;
             case "short" -> Short.class;
             case "char" -> Character.class;
-            default -> null;
+            default -> type;
         };
     }
 }
