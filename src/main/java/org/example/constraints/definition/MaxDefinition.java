@@ -11,7 +11,7 @@ public class MaxDefinition extends ConstraintDefinition {
         this.annotationType = Max.class;
     }
 
-    public MaxDefinition value(int value) {
+    public MaxDefinition value(long value) {
         this.value = value;
         return this;
     }
