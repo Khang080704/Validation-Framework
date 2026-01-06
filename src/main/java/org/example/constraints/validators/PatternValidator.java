@@ -1,7 +1,5 @@
 package org.example.constraints.validators;
 
-import org.example.config.PatternConfig;
-
 import java.util.Map;
 import java.util.regex.Pattern;
 

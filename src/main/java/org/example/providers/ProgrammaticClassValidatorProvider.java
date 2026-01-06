@@ -1,13 +1,13 @@
 package org.example.providers;
 
 import org.example.common.FieldValidator;
-import org.example.constraints.validators.ConstraintValidator;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class ProgrammaticClassValidatorProvider implements ClassValidatorProvider{
-    private Map<Class<?>, Set<FieldValidator>> validators;
+    private final Map<Class<?>, Set<FieldValidator>> validators = new HashMap<>();
 
     @Override
     public Set<FieldValidator> getValidators(Class<?> type) {

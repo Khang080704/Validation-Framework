@@ -21,7 +21,7 @@ public class AnnotationClassValidatorProvider implements ClassValidatorProvider{
             Set<ConstraintValidator<?>> constraintValidators = new HashSet<>();
 
             for (Annotation annotation : field.getAnnotations()) {
-                ConstraintValidator<?> validator = ConstraintValidatorRegistry.getInstance(annotation.getClass(), field.getClass());
+                ConstraintValidator<?> validator = ConstraintValidatorRegistry.getInstance(annotation.annotationType(), field.getType());
                 validator.initialize(getAnnotationAttributes(annotation));
                 constraintValidators.add(validator);
             }
