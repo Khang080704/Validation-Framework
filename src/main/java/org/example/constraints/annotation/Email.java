@@ -8,5 +8,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Email {
-    String message() default "";
+    String message() default "Field is not a valid email address";
 }

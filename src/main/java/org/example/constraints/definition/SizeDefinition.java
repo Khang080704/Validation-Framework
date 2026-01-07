@@ -10,6 +10,9 @@ public class SizeDefinition extends ConstraintDefinition {
 
     public SizeDefinition() {
         this.annotationType = Size.class;
+        this.min = 0;
+        this.max = Integer.MAX_VALUE;
+        this.message = "Size constraint violated";
     }
 
     public SizeDefinition message (String message) {

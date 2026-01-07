@@ -7,6 +7,7 @@ import java.util.Map;
 public class EmailDefinition extends ConstraintDefinition {
     public EmailDefinition() {
         this.annotationType = Email.class;
+        this.message = "Field is not a valid email address";
     }
 
     public EmailDefinition message(String message) {

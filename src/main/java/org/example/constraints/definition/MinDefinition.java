@@ -9,6 +9,7 @@ public class MinDefinition extends ConstraintDefinition {
 
     public MinDefinition() {
         this.annotationType = Min.class;
+        this.message = "Field is below minimum value";
     }
 
     public MinDefinition message(String message) {
