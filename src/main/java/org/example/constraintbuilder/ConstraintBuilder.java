@@ -1,9 +1,10 @@
 package org.example.constraintbuilder;
 
-import org.example.common.FieldConfig;
-import org.example.config.Config;
-import org.example.configproviders.ProgrammaticConfigProvider;
+import org.example.common.FieldValidator;
 import org.example.constraints.definition.ConstraintDefinition;
+import org.example.constraints.validators.ConstraintValidator;
+import org.example.constraints.validators.ConstraintValidatorRegistry;
+import org.example.providers.ProgrammaticClassValidatorProvider;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
@@ -11,11 +12,11 @@ import java.util.Set;
 
 public class ConstraintBuilder {
     private Class<?> type;
-    private final Set<FieldConfig> fieldConfigs = new HashSet<>();
-    private final ProgrammaticConfigProvider configProvider;
+    private final Set<FieldValidator> validators = new HashSet<>();
+    private final ProgrammaticClassValidatorProvider provider;
 
-    public ConstraintBuilder(ProgrammaticConfigProvider configProvider) {
-        this.configProvider = configProvider;
+    public ConstraintBuilder(ProgrammaticClassValidatorProvider provider) {
+        this.provider = provider;
     }
 
     public ConstraintBuilder on(Class<?> type) {
@@ -34,13 +35,16 @@ public class ConstraintBuilder {
             throw new IllegalArgumentException("At least one constraint definition must be provided.");
         }
 
-        FieldConfig fieldConfig = new FieldConfig(field);
+        Set<ConstraintValidator<?>> constraintValidators = new HashSet<>();
 
         for (ConstraintDefinition def : defs) {
-            fieldConfig.addConfig(def.getConfig());
+            ConstraintValidator<?> validator = ConstraintValidatorRegistry.getInstance(def.getAnnotationType(), field.getType());
+            validator.initialize(def.getAttributes());
+            constraintValidators.add(validator);
         }
 
-        this.fieldConfigs.add(fieldConfig);
+        this.validators.add(new FieldValidator(field, constraintValidators));
+
         return this;
     }
 
@@ -49,11 +53,11 @@ public class ConstraintBuilder {
             throw new IllegalStateException("Type must be set before building configurations.");
         }
 
-        if (this.fieldConfigs.isEmpty()) {
+        if (this.validators.isEmpty()) {
             throw new IllegalStateException("At least one field configuration must be added before building.");
         }
 
-        this.configProvider.putConfigs(this.type, this.fieldConfigs);
+        this.provider.putValidators(this.type, this.validators);
     }
 
     private Field getField(String fieldName) {

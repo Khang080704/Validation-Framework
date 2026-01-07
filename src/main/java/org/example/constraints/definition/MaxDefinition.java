@@ -1,21 +1,31 @@
 package org.example.constraints.definition;
 
-import org.example.config.Config;
-import org.example.config.MaxConfig;
+import org.example.constraints.annotation.Max;
+
+import java.util.Map;
 
 public class MaxDefinition extends ConstraintDefinition {
-    private final long max;
+    private long value;
 
-    public MaxDefinition(long max) {
-        this.max = max;
+    public MaxDefinition() {
+        this.annotationType = Max.class;
+    }
+
+    public MaxDefinition message(String message) {
+        this.message = message;
+        return this;
+    }
+
+    public MaxDefinition value(long value) {
+        this.value = value;
+        return this;
     }
 
     @Override
-    public Config getConfig() {
-        return new MaxConfig(this.message, this.max);
-    }
-
-    public long getMax() {
-        return this.max;
+    public Map<String, Object> getAttributes() {
+        return Map.of(
+            "message", message,
+            "value", value
+        );
     }
 }

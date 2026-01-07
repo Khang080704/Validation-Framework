@@ -1,26 +1,38 @@
 package org.example.constraints.definition;
 
-import org.example.config.Config;
-import org.example.config.SizeConfig;
+import org.example.constraints.annotation.Size;
+
+import java.util.Map;
 
 public class SizeDefinition extends ConstraintDefinition {
     private int min;
     private int max;
 
-    public SizeDefinition(int min, int max) {
+    public SizeDefinition() {
+        this.annotationType = Size.class;
+    }
+
+    public SizeDefinition message (String message) {
+        this.message = message;
+        return this;
+    }
+
+    public SizeDefinition min(int min) {
         this.min = min;
+        return this;
+    }
+
+    public SizeDefinition max(int max) {
         this.max = max;
+        return this;
     }
 
     @Override
-    public Config getConfig() {
-        return new SizeConfig(message, min, max);
-    }
-
-    public int getMax() {
-        return max;
-    }
-    public int getMin() {
-        return min;
+    public Map<String, Object> getAttributes() {
+        return Map.of(
+            "message", message,
+            "min", min,
+            "max", max
+        );
     }
 }

@@ -1,20 +1,31 @@
 package org.example.constraints.definition;
 
-import org.example.config.Config;
-import org.example.config.MinConfig;
+import org.example.constraints.annotation.Min;
+
+import java.util.Map;
 
 public class MinDefinition extends ConstraintDefinition {
-    private final long min;
+    private long value;
 
-    public MinDefinition(long min) {
-        this.min = min;
+    public MinDefinition() {
+        this.annotationType = Min.class;
+    }
+
+    public MinDefinition message(String message) {
+        this.message = message;
+        return this;
+    }
+
+    public MinDefinition value(long value) {
+        this.value = value;
+        return this;
     }
 
     @Override
-    public Config getConfig() {
-        return new MinConfig(message, min);
-    }
-    public long getMin() {
-        return min;
+    public Map<String, Object> getAttributes() {
+        return Map.of(
+            "message", message,
+            "value", value
+        );
     }
 }
