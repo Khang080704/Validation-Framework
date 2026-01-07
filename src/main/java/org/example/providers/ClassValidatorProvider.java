@@ -1,9 +1,7 @@
 package org.example.providers;
 
-import org.example.common.FieldValidator;
-
-import java.util.Set;
+import org.example.validators.ClassValidator;
 
 public interface ClassValidatorProvider {
-    Set<FieldValidator> getValidators(Class<?> type);
+    ClassValidator getValidators(Class<?> type);
 }

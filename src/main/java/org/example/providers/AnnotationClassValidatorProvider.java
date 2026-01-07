@@ -1,8 +1,11 @@
 package org.example.providers;
 
-import org.example.common.FieldValidator;
+import org.example.constraints.annotation.IsValid;
 import org.example.constraints.validators.ConstraintValidator;
 import org.example.constraints.validators.ConstraintValidatorRegistry;
+import org.example.validators.ClassValidator;
+import org.example.validators.ElementValidator;
+import org.example.validators.FieldValidator;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -14,22 +17,34 @@ import java.util.Set;
 
 public class AnnotationClassValidatorProvider implements ClassValidatorProvider{
     @Override
-    public Set<FieldValidator> getValidators(Class<?> type) {
-        Set<FieldValidator> validators = new HashSet<>();
+    public ClassValidator getValidators(Class<?> type) {
+        Set<ElementValidator> validators = new HashSet<>();
 
         for (Field field : type.getDeclaredFields()) {
             Set<ConstraintValidator<?>> constraintValidators = new HashSet<>();
 
             for (Annotation annotation : field.getAnnotations()) {
-                ConstraintValidator<?> validator = ConstraintValidatorRegistry.getInstance(annotation.annotationType(), field.getType());
-                validator.initialize(getAnnotationAttributes(annotation));
-                constraintValidators.add(validator);
+                if (annotation.annotationType().equals(IsValid.class)) {
+                    ClassValidator classValidator = getValidators(field.getType());
+
+                    if (classValidator != null) {
+                        classValidator.setField(field);
+                        validators.add(classValidator);
+                    }
+                }
+                else {
+                    ConstraintValidator<?> validator = ConstraintValidatorRegistry.getInstance(annotation.annotationType(), field.getType());
+                    validator.initialize(getAnnotationAttributes(annotation));
+                    constraintValidators.add(validator);
+                }
             }
 
-            validators.add(new FieldValidator(field, constraintValidators));
+            if (!constraintValidators.isEmpty()) {
+                validators.add(new FieldValidator(field, constraintValidators));
+            }
         }
 
-        return validators;
+        return validators.isEmpty() ? null : new ClassValidator(validators);
     }
 
     private Map<String, Object> getAnnotationAttributes(Annotation annotation) {

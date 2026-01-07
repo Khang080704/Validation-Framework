@@ -1,15 +1,33 @@
 package org.example.entities;
 
-import org.example.constraints.annotation.Email;
-import org.example.constraints.annotation.Max;
-import org.example.constraints.annotation.NotNull;
+import org.example.constraints.annotation.*;
 
 public class User {
+    @IsValid
+    private Credential credential;
+
+    @NotBlank(message = "First name must not be blank")
     private String firstName;
+
+    @NotBlank(message = "Last name must not be blank")
     private String lastName;
+
     private String middleName;
+
+    @Email(message = "Email must be a valid email address")
     private String email;
 
+    @Min(value = 1, message = "Age must be at least 1")
+    @Max(value = 100, message = "Age must be at most 100")
+    private int age;
+
+    public Credential getCredential() {
+        return credential;
+    }
+
+    public void setCredential(Credential credential) {
+        this.credential = credential;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -34,11 +52,20 @@ public class User {
     public void setMiddleName(String middleName) {
         this.middleName = middleName;
     }
+
     public String getEmail() {
         return email;
     }
+
     public void setEmail(String email) {
         this.email = email;
     }
 
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
 }

@@ -1,21 +1,25 @@
 package org.example.common;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ValidationViolation {
-    private final Map<String, List<String>> violations = new HashMap<>();
+    private String path;
+    private final List<String> messages;
 
-    public Map<String, List<String>> getViolations() {
-        return violations;
+    public ValidationViolation(String path, List<String> messages) {
+        this.path = path;
+        this.messages = messages;
     }
 
-    public void addViolation(String field, List<String> messages) {
-        violations.put(field, messages);
+    public String getPath() {
+        return path;
     }
 
-    public boolean isViolated() {
-        return !violations.isEmpty();
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public List<String> getMessages() {
+        return messages;
     }
 }
