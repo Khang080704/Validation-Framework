@@ -30,7 +30,7 @@ public class ProgrammaticClassValidatorProvider implements ClassValidatorProvide
 
             for (ConstraintDefinition definition : entry.getValue()) {
                 if (definition instanceof IsValidDefinition) {
-                    ClassValidator classValidator = this.validators.get(definition.getClass());
+                    ClassValidator classValidator = this.validators.get(entry.getKey().getType());
                     if (classValidator != null) {
                         classValidator.setField(entry.getKey());
                         elementValidators.add(classValidator);
