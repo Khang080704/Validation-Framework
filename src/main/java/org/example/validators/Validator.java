@@ -3,6 +3,7 @@ package org.example.validators;
 import org.example.common.ValidationViolation;
 import org.example.providers.ClassValidatorProvider;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,62 @@ public class Validator {
                 if (violations != null) {
                     for (ValidationViolation violation : violations) {
                         addViolation(result, violation);
+                    }
+                }
+            }
+        }
+
+        return result.isEmpty() ? null : result;
+    }
+
+    public List<ValidationViolation> validateProperty(Object object, String propertyName) {
+        List<ValidationViolation> result = new ArrayList<>();
+
+        for (ClassValidatorProvider provider : providers) {
+            ClassValidator classValidator = provider.getValidators(object.getClass());
+
+            if (classValidator != null) {
+                for (ElementValidator validator : classValidator.getValidators()) {
+                    Field field = validator.getField();
+                    if (field.getName().equals(propertyName)) {
+                        try {
+                            field.setAccessible(true);
+                            Object fieldValue = field.get(object);
+                            List<ValidationViolation> violations = validator.validate(fieldValue);
+
+                            if (violations != null) {
+                                for (ValidationViolation violation : violations) {
+                                    addViolation(result, violation);
+                                }
+                            }
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        }
+
+        return result.isEmpty() ? null : result;
+    }
+
+    public List<ValidationViolation> validateValue(Class<?> type, Object value, String propertyName) {
+        List<ValidationViolation> result = new ArrayList<>();
+
+        for (ClassValidatorProvider provider : providers) {
+            ClassValidator classValidator = provider.getValidators(type);
+
+            if (classValidator != null) {
+                for (ElementValidator validator : classValidator.getValidators()) {
+                    Field field = validator.getField();
+                    if (field.getName().equals(propertyName)) {
+                        List<ValidationViolation> violations = validator.validate(value);
+
+                        if (violations != null) {
+                            for (ValidationViolation violation : violations) {
+                                addViolation(result, violation);
+                            }
+                        }
                     }
                 }
             }

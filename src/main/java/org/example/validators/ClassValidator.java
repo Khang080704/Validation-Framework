@@ -20,6 +20,10 @@ public class ClassValidator extends ElementValidator {
         this.validators = validators;
     }
 
+    public Set<ElementValidator> getValidators() {
+        return validators;
+    }
+
     @Override
     public List<ValidationViolation> validate(Object value) {
         List<ValidationViolation> results = new ArrayList<>();
