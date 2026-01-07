@@ -27,6 +27,9 @@ public class User {
     @NotEmpty(message = "Phone numbers must not be empty")
     private List<String> phoneNumbers;
 
+    @AssertTrue(message = "User must be active")
+    private boolean active;
+
     public Credential getCredential() {
         return credential;
     }
@@ -81,5 +84,13 @@ public class User {
 
     public void setPhoneNumbers(List<String> phoneNumbers) {
         this.phoneNumbers = phoneNumbers;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

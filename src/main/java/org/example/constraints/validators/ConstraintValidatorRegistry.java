@@ -13,6 +13,8 @@ public class ConstraintValidatorRegistry {
     private static Map<Class<? extends Annotation>, Map<Class<?>, Class<? extends ConstraintValidator<?>>>> registry = new HashMap<>();
 
     static {
+        register(AssertTrue.class, Boolean.class, AssertTrueValidator.class);
+        register(AssertFalse.class, Boolean.class, AssertFalseValidator.class);
         register(Email.class, String.class, EmailValidator.class);
         register(Max.class, Number.class, MaxValidator.class);
         register(Min.class, Number.class, MinValidator.class);
