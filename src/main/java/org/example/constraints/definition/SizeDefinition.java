@@ -12,6 +12,11 @@ public class SizeDefinition extends ConstraintDefinition {
         this.annotationType = Size.class;
     }
 
+    public SizeDefinition message (String message) {
+        this.message = message;
+        return this;
+    }
+
     public SizeDefinition min(int min) {
         this.min = min;
         return this;

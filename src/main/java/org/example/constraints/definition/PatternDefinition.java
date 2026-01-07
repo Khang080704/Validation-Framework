@@ -11,6 +11,11 @@ public class PatternDefinition extends ConstraintDefinition{
         this.annotationType = Pattern.class;
     }
 
+    public PatternDefinition message (String message) {
+        this.message = message;
+        return this;
+    }
+
     public PatternDefinition regex(String regex) {
         this.regex = regex;
         return this;

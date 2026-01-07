@@ -11,6 +11,11 @@ public class MinDefinition extends ConstraintDefinition {
         this.annotationType = Min.class;
     }
 
+    public MinDefinition message(String message) {
+        this.message = message;
+        return this;
+    }
+
     public MinDefinition value(long value) {
         this.value = value;
         return this;

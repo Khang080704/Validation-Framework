@@ -9,6 +9,11 @@ public class NotNullDefinition extends ConstraintDefinition{
         this.annotationType = NotNull.class;
     }
 
+    public NotNullDefinition message (String message) {
+        this.message = message;
+        return this;
+    }
+
     @Override
     public Map<String, Object> getAttributes() {
         return Map.of(

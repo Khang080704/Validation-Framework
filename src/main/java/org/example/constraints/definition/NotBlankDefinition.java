@@ -9,6 +9,11 @@ public class NotBlankDefinition extends ConstraintDefinition {
         this.annotationType = NotBlank.class;
     }
 
+    public NotBlankDefinition message (String message) {
+        this.message = message;
+        return this;
+    }
+
     @Override
     public Map<String, Object> getAttributes() {
         return Map.of(

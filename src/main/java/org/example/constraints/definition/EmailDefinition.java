@@ -9,6 +9,11 @@ public class EmailDefinition extends ConstraintDefinition {
         this.annotationType = Email.class;
     }
 
+    public EmailDefinition message(String message) {
+        this.message = message;
+        return this;
+    }
+
     @Override
     public Map<String, Object> getAttributes() {
         return Map.of(
