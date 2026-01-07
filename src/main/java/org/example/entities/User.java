@@ -2,6 +2,8 @@ package org.example.entities;
 
 import org.example.constraints.annotation.*;
 
+import java.util.List;
+
 public class User {
     @IsValid
     private Credential credential;
@@ -22,7 +24,8 @@ public class User {
     private int age;
 
     @Size(min = 1, max = 3, message = "There must be between 1 and 3 phone numbers")
-    private String[] phoneNumbers;
+    @NotEmpty(message = "Phone numbers must not be empty")
+    private List<String> phoneNumbers;
 
     public Credential getCredential() {
         return credential;
@@ -72,11 +75,11 @@ public class User {
         this.age = age;
     }
 
-    public String[] getPhoneNumbers() {
+    public List<String> getPhoneNumbers() {
         return phoneNumbers;
     }
 
-    public void setPhoneNumbers(String[] phoneNumbers) {
+    public void setPhoneNumbers(List<String> phoneNumbers) {
         this.phoneNumbers = phoneNumbers;
     }
 }

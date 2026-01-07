@@ -1,6 +1,7 @@
 package org.example.constraints.validators;
 
 import org.example.constraints.annotation.*;
+import org.example.constraints.validators.notempty.*;
 import org.example.constraints.validators.size.*;
 
 import java.lang.annotation.Annotation;
@@ -16,7 +17,18 @@ public class ConstraintValidatorRegistry {
         register(Max.class, Number.class, MaxValidator.class);
         register(Min.class, Number.class, MinValidator.class);
         register(NotBlank.class, String.class, NotBlankValidator.class);
-        register(NotEmpty.class, String.class, NotEmptyValidator.class);
+        register(NotEmpty.class, String.class, NotEmptyValidatorForString.class);
+        register(NotEmpty.class, Collection.class, NotEmptyValidatorForCollection.class);
+        register(NotEmpty.class, Map.class, NotEmptyValidatorForMap.class);
+        register(NotEmpty.class, Object[].class, NotEmptyValidatorForArray.class);
+        register(NotEmpty.class, int[].class, NotEmptyValidatorForIntegerArray.class);
+        register(NotEmpty.class, long[].class, NotEmptyValidatorForLongArray.class);
+        register(NotEmpty.class, double[].class, NotEmptyValidatorForDoubleArray.class);
+        register(NotEmpty.class, float[].class, NotEmptyValidatorForFloatArray.class);
+        register(NotEmpty.class, boolean[].class, NotEmptyValidatorForBooleanArray.class);
+        register(NotEmpty.class, byte[].class, NotEmptyValidatorForByteArray.class);
+        register(NotEmpty.class, short[].class, NotEmptyValidatorForShortArray.class);
+        register(NotEmpty.class, char[].class, NotEmptyValidatorForCharArray.class);
         register(NotNull.class, Object.class, NotNullValidator.class);
         register(Pattern.class, String.class, PatternValidator.class);
         register(Size.class, String.class, SizeValidatorForString.class);

@@ -34,7 +34,7 @@ public class Main {
         user.setEmail("example");
         user.setLastName("   ");
 
-        String[] phoneNumbers = {"1234567890", "1234567890", "1234567890", "1234567890", "1234567890", "1234567890"};
+        List<String> phoneNumbers = List.of("1234567890", "1234567890", "1234567890", "1234567890", "1234567890", "1234567890");
         user.setPhoneNumbers(phoneNumbers);
 
         List<ValidationViolation> violations = validator.validate(user);
