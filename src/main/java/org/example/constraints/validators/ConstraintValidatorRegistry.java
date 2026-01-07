@@ -4,6 +4,7 @@ import org.example.constraints.annotation.*;
 import org.example.constraints.validators.size.*;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +20,8 @@ public class ConstraintValidatorRegistry {
         register(NotNull.class, Object.class, NotNullValidator.class);
         register(Pattern.class, String.class, PatternValidator.class);
         register(Size.class, String.class, SizeValidatorForString.class);
+        register(Size.class, Collection.class, SizeValidatorForCollection.class);
+        register(Size.class, Map.class, SizeValidatorForMap.class);
         register(Size.class, Object[].class, SizeValidatorForArray.class);
         register(Size.class, int[].class, SizeValidatorForIntegerArray.class);
         register(Size.class, long[].class, SizeValidatorForLongArray.class);
