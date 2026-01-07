@@ -7,6 +7,7 @@ import java.util.Map;
 public class IsValidDefinition extends ConstraintDefinition {
     public IsValidDefinition() {
         this.annotationType = IsValid.class;
+        this.message = "Field is not valid";
     }
 
     public IsValidDefinition message(String message) {

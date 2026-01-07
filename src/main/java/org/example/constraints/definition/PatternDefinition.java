@@ -9,6 +9,7 @@ public class PatternDefinition extends ConstraintDefinition{
 
     public PatternDefinition() {
         this.annotationType = Pattern.class;
+        this.message = "Field does not match the required pattern";
     }
 
     public PatternDefinition message (String message) {

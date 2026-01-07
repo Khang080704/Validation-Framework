@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface Max {
     long value();
-    String message() default "";
+    String message() default "Field exceeds maximum value";
 }

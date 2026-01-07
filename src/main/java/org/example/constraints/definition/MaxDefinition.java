@@ -9,6 +9,7 @@ public class MaxDefinition extends ConstraintDefinition {
 
     public MaxDefinition() {
         this.annotationType = Max.class;
+        this.message = "Field exceeds maximum value";
     }
 
     public MaxDefinition message(String message) {

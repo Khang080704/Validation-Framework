@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Pattern {
     String regex();
-    String message() default "";
+    String message() default "Field does not match the required pattern";
 }

@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Size {
-    int min();
-    int max();
-    String message() default "";
+    int min() default 0;
+    int max() default Integer.MAX_VALUE;
+    String message() default "Size constraint violated";
 }

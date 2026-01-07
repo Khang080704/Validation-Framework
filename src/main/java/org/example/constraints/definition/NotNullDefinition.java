@@ -7,6 +7,7 @@ import java.util.Map;
 public class NotNullDefinition extends ConstraintDefinition{
     public NotNullDefinition() {
         this.annotationType = NotNull.class;
+        this.message = "Field must not be null";
     }
 
     public NotNullDefinition message (String message) {

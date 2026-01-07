@@ -7,6 +7,7 @@ import java.util.Map;
 public class NotBlankDefinition extends ConstraintDefinition {
     public NotBlankDefinition() {
         this.annotationType = NotBlank.class;
+        this.message = "Field must not be blank";
     }
 
     public NotBlankDefinition message (String message) {
