@@ -1,18 +1,16 @@
 package org.example.constraintbuilder;
 
-import org.example.common.FieldValidator;
 import org.example.constraints.definition.ConstraintDefinition;
-import org.example.constraints.validators.ConstraintValidator;
-import org.example.constraints.validators.ConstraintValidatorRegistry;
 import org.example.providers.ProgrammaticClassValidatorProvider;
 
 import java.lang.reflect.Field;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class ConstraintBuilder {
     private Class<?> type;
-    private final Set<FieldValidator> validators = new HashSet<>();
+    private final Map<Field, Set<ConstraintDefinition>> constraints = new HashMap<>();
     private final ProgrammaticClassValidatorProvider provider;
 
     public ConstraintBuilder(ProgrammaticClassValidatorProvider provider) {
@@ -35,16 +33,7 @@ public class ConstraintBuilder {
             throw new IllegalArgumentException("At least one constraint definition must be provided.");
         }
 
-        Set<ConstraintValidator<?>> constraintValidators = new HashSet<>();
-
-        for (ConstraintDefinition def : defs) {
-            ConstraintValidator<?> validator = ConstraintValidatorRegistry.getInstance(def.getAnnotationType(), field.getType());
-            validator.initialize(def.getAttributes());
-            constraintValidators.add(validator);
-        }
-
-        this.validators.add(new FieldValidator(field, constraintValidators));
-
+        this.constraints.put(field, Set.of(defs));
         return this;
     }
 
@@ -53,11 +42,11 @@ public class ConstraintBuilder {
             throw new IllegalStateException("Type must be set before building configurations.");
         }
 
-        if (this.validators.isEmpty()) {
+        if (this.constraints.isEmpty()) {
             throw new IllegalStateException("At least one field configuration must be added before building.");
         }
 
-        this.provider.putValidators(this.type, this.validators);
+        this.provider.createValidators(this.type, this.constraints);
     }
 
     private Field getField(String fieldName) {
