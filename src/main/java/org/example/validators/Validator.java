@@ -1,5 +1,6 @@
 package org.example.validators;
 
+import org.example.common.ValidationObserver;
 import org.example.common.ValidationViolation;
 import org.example.providers.ClassValidatorProvider;
 
@@ -9,9 +10,18 @@ import java.util.List;
 
 public class Validator {
     List<ClassValidatorProvider> providers;
+    List<ValidationObserver> observers = new ArrayList<>();
 
     public Validator(List<ClassValidatorProvider> providers) {
         this.providers = providers;
+    }
+
+    public void addObserver(ValidationObserver observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(ValidationObserver observer) {
+        observers.remove(observer);
     }
 
     public List<ValidationViolation> validate(Object object) {
@@ -31,6 +41,7 @@ public class Validator {
             }
         }
 
+        notifyObservers(result);
         return result.isEmpty() ? null : result;
     }
 
@@ -62,6 +73,7 @@ public class Validator {
             }
         }
 
+        notifyObservers(result);
         return result.isEmpty() ? null : result;
     }
 
@@ -87,10 +99,11 @@ public class Validator {
             }
         }
 
+        notifyObservers(result);
         return result.isEmpty() ? null : result;
     }
 
-    public void addViolation(List<ValidationViolation> violations, ValidationViolation violationToAdd) {
+    private void addViolation(List<ValidationViolation> violations, ValidationViolation violationToAdd) {
         for (ValidationViolation violation : violations) {
             if (violation.getPath().equals(violationToAdd.getPath())) {
                 violation.getMessages().addAll(violationToAdd.getMessages());
@@ -99,5 +112,17 @@ public class Validator {
         }
 
         violations.add(violationToAdd);
+    }
+
+    private void notifyObservers(List<ValidationViolation> violation) {
+        if (violation.isEmpty()) {
+            for (ValidationObserver observer : observers) {
+                observer.onValidationSuccess();
+            }
+        } else {
+            for (ValidationObserver observer : observers) {
+                observer.onValidationFailure(violation);
+            }
+        }
     }
 }
