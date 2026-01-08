@@ -3,13 +3,6 @@
 ## Course Project: Design Patterns
 
 
-# Introduction
-
-Java Validation Framework is a lightweight, open-source library designed to assist developers in validating data within Java applications (Swing, JavaFX, Console, etc.).
-
-This project is inspired by Hibernate Validator and jQuery Validation, with the core objective of flexibly applying Design Patterns to ensure usability, extensibility, and maintainability.
-
-
 
 # Quick Start & Usage
 
