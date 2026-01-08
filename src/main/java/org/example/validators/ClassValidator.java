@@ -26,6 +26,10 @@ public class ClassValidator extends ElementValidator {
 
     @Override
     public List<ValidationViolation> validate(Object value) {
+        if (value == null) {
+            return null;
+        }
+        
         List<ValidationViolation> results = new ArrayList<>();
 
         for (ElementValidator validator : validators) {

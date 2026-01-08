@@ -115,11 +115,7 @@ public class Validator {
     }
 
     private void notifyObservers(List<ValidationViolation> violation) {
-        if (observers.isEmpty()) {
-            return;
-        }
-
-        if (violation == null || violation.isEmpty()) {
+        if (violation.isEmpty()) {
             for (ValidationObserver observer : observers) {
                 observer.onValidationSuccess();
             }
