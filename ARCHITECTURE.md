@@ -7,43 +7,51 @@ Framework này là một thư viện validation linh hoạt cho Java, cho phép 
 ## Design Patterns Được Sử Dụng
 
 ### 1. **Strategy Pattern**
+
 - **Vị trí**: `validators/constraintvalidators/ConstraintValidator.java`
 - **Mục đích**: Cho phép chuyển đổi giữa các thuật toán validation khác nhau
 - **Ứng dụng**: Mỗi loại validation (NotNull, Size, Email...) là một strategy riêng
 
 ### 2. **Registry Pattern**
-- **Vị trí**: 
+
+- **Vị trí**:
   - `validators/ValidatorRegistry.java`
   - `converters/AnnotationToConfigConverterRegistry.java`
 - **Mục đích**: Quản lý mapping giữa Config/Annotation và Validator/Converter tương ứng
 - **Ứng dụng**: Đăng ký và tra cứu validator/converter tại runtime
 
 ### 3. **Builder Pattern**
+
 - **Vị trí**: `constraintbuilder/ConstraintBuilder.java`
 - **Mục đích**: Tạo validation configuration một cách fluent và dễ đọc
 - **Ứng dụng**: Programmatic API cho phép xây dựng validation rules theo chuỗi
 
 ### 4. **Decorator Pattern (Proxy/Wrapper)**
+
 - **Vị trí**: `configproviders/CachedConfigProvider.java`
 - **Mục đích**: Thêm caching layer cho ConfigProvider
 - **Ứng dụng**: Wrap nhiều providers và cache kết quả để tối ưu hiệu năng
 
 ### 5. **Composite Pattern**
+
 - **Vị trí**: `common/FieldConfig.java`
 - **Mục đích**: Kết hợp nhiều Config objects cho một field
 - **Ứng dụng**: Một field có thể có nhiều validation rules (Set<Config>)
 
 ### 6. **Template Method Pattern**
+
 - **Vị trí**: `constraints/definition/ConstraintDefinition.java`
 - **Mục đích**: Định nghĩa skeleton cho constraint definitions
 - **Ứng dụng**: Các subclass implement `getConfig()` theo cách riêng
 
 ### 7. **Factory Pattern**
+
 - **Vị trí**: `converters/AnnotationToConfigConverter.java`
 - **Mục đích**: Chuyển đổi từ Annotation sang Config object
 - **Ứng dụng**: Mỗi converter biết cách tạo Config từ Annotation tương ứng
 
 ### 8. **Observer Pattern (Notification)**
+
 - **Vị trí**: `common/IConstraintViolationNotifier.java`
 - **Mục đích**: Thông báo khi có validation violation
 - **Ứng dụng**: Validator notify cho notifier khi validation fails
@@ -53,46 +61,59 @@ Framework này là một thư viện validation linh hoạt cho Java, cho phép 
 ### 📁 `common/` - Các Thành Phần Dùng Chung
 
 #### `FieldConfig.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Container lưu trữ configuration cho một field cụ thể
 - Quản lý nhiều validation rules (Config) cho cùng một field
 - Sử dụng Reflection để access field values
 
-**Design Pattern**: 
+**Design Pattern**:
+
 - **Composite Pattern**: Chứa `Set<Config>` để kết hợp nhiều constraints
 
 **Thuộc tính chính**:
+
 - `Field field`: Java Reflection field object
 - `Set<Config> configs`: Tập hợp các validation rules
 
 **Phương thức quan trọng**:
+
 - `addConfig(Config)`: Thêm validation rule
 - `getConfigs()`: Lấy tất cả validation rules
 
 ---
 
 #### `IConstraintViolationNotifier.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Interface cho notification mechanism
 - Cho phép custom cách hiển thị validation errors
 
-**Design Pattern**: 
+**Design Pattern**:
+
 - **Observer Pattern**: Định nghĩa interface cho observers nhận thông báo violations
 
 **Phương thức**:
+
 - `display(ValidationViolation)`: Hiển thị thông tin lỗi
 
 ---
 
 #### `ValidationViolation.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Chứa kết quả validation
 - Lưu trữ tất cả các lỗi validation theo field
 
 **Cấu trúc dữ liệu**:
+
 - `Map<String, List<String>> violations`: Map từ field name đến danh sách lỗi
 
 **Phương thức**:
+
 - `addViolation(String field, List<String> messages)`: Thêm lỗi cho field
 - `isViolated()`: Kiểm tra có lỗi hay không
 - `getViolations()`: Lấy tất cả violations
@@ -102,24 +123,31 @@ Framework này là một thư viện validation linh hoạt cho Java, cho phép 
 ### 📁 `config/` - Validation Configuration Objects
 
 #### `Config.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Base class cho tất cả validation configurations
 - Chứa error message
 
-**Design Pattern**: 
+**Design Pattern**:
+
 - **Template Method**: Base class cho hierarchy của configs
 
 **Thuộc tính**:
+
 - `String message`: Thông báo lỗi khi validation fails
 
 ---
 
 #### `NotNullConfig.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Configuration cho NotNull validation
 - Kế thừa từ Config
 
-**Sử dụng**: 
+**Sử dụng**:
+
 - Được tạo từ `@NotNull` annotation hoặc `NotNullDefinition`
 
 ---
@@ -127,29 +155,37 @@ Framework này là một thư viện validation linh hoạt cho Java, cho phép 
 ### 📁 `configproviders/` - Cung Cấp Validation Configurations
 
 #### `ConfigProvider.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Interface định nghĩa contract cho config providers
 - Strategy interface cho các nguồn config khác nhau
 
-**Design Pattern**: 
+**Design Pattern**:
+
 - **Strategy Pattern**: Interface cho các strategy khác nhau
 
 **Phương thức**:
+
 - `Set<FieldConfig> getConfig(Class<?> type)`: Lấy configs cho một class
 
 ---
 
 #### `AnnotationConfigProvider.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Đọc validation rules từ annotations trên class
 - Sử dụng Reflection để scan annotations
 - Chuyển đổi annotations thành Config objects
 
-**Design Pattern**: 
+**Design Pattern**:
+
 - **Strategy Pattern**: Concrete strategy cho annotation-based config
 - **Factory Pattern**: Sử dụng AnnotationToConfigConverter để tạo configs
 
 **Quy trình hoạt động**:
+
 1. Duyệt tất cả fields của class
 2. Scan annotations trên mỗi field
 3. Chuyển đổi annotation → Config qua AnnotationToConfigConverterRegistry
@@ -158,38 +194,48 @@ Framework này là một thư viện validation linh hoạt cho Java, cho phép 
 ---
 
 #### `ProgrammaticConfigProvider.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Lưu trữ validation rules được định nghĩa qua code
 - Cho phép add configs dynamically tại runtime
 
-**Design Pattern**: 
+**Design Pattern**:
+
 - **Strategy Pattern**: Concrete strategy cho programmatic config
 - **Registry Pattern**: Map lưu trữ configs theo class type
 
 **Thuộc tính**:
+
 - `Map<Class<?>, Set<FieldConfig>> configs`: Lưu configs theo class
 
 **Phương thức**:
+
 - `putConfigs(Class<?>, Set<FieldConfig>)`: Lưu configs cho class
 - `getConfig(Class<?>)`: Lấy configs của class
 
 ---
 
 #### `CachedConfigProvider.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Kết hợp nhiều ConfigProviders (Annotation + Programmatic)
 - Cache kết quả để tối ưu performance
 - Tránh việc scan/process lặp lại cho cùng một class
 
-**Design Pattern**: 
+**Design Pattern**:
+
 - **Decorator Pattern**: Wrap nhiều providers và thêm caching
 - **Composite Pattern**: Kết hợp nhiều providers
 
 **Thuộc tính**:
+
 - `Map<Class<?>, Set<FieldConfig>> cache`: Cache configs theo class
 - `List<ConfigProvider> providers`: Danh sách providers
 
 **Quy trình**:
+
 1. Check cache trước
 2. Nếu không có, gọi tất cả providers
 3. Merge kết quả từ tất cả providers
@@ -200,23 +246,28 @@ Framework này là một thư viện validation linh hoạt cho Java, cho phép 
 ### 📁 `constraintbuilder/` - Fluent API Builder
 
 #### `ConstraintBuilder.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Fluent API để định nghĩa validation rules qua code
 - Tạo configs và lưu vào ProgrammaticConfigProvider
 
-**Design Pattern**: 
+**Design Pattern**:
+
 - **Builder Pattern**: Fluent interface cho việc xây dựng configs
 
 **Phương thức chính**:
+
 - `on(Class<?>)`: Chỉ định class cần validate
 - `constraints(String fieldName, ConstraintDefinition...)`: Thêm validation rules cho field
 - `build()`: Hoàn tất và lưu configs vào provider
 
 **Ví dụ sử dụng**:
+
 ```java
 builder
     .on(User.class)
-    .constraints("email", 
+    .constraints("email",
         new NotNullDefinition().message("Email required"),
         new EmailDefinition().message("Invalid email")
     )
@@ -230,6 +281,7 @@ builder
 #### 📁 `constraints/annotation/` - Java Annotations
 
 **Các file annotation**:
+
 - `NotNull.java`: Kiểm tra giá trị không null
 - `NotEmpty.java`: Kiểm tra string/collection không rỗng
 - `Size.java`: Kiểm tra độ dài string hoặc kích thước collection
@@ -239,6 +291,7 @@ builder
 - `Pattern.java`: Validate theo regex pattern
 
 **Chức năng chung**:
+
 - Đánh dấu fields cần validate
 - Chứa metadata (message, parameters)
 - Được process bởi AnnotationConfigProvider
@@ -246,6 +299,7 @@ builder
 **Retention**: `RUNTIME` - Available qua reflection
 
 **Ví dụ**:
+
 ```java
 @NotNull(message = "Name is required")
 @Size(min = 2, max = 50, message = "Name must be 2-50 characters")
@@ -257,25 +311,32 @@ private String name;
 #### 📁 `constraints/definition/` - Programmatic Definitions
 
 #### `ConstraintDefinition.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Abstract base class cho programmatic constraint definitions
 - Cho phép fluent configuration
 
-**Design Pattern**: 
+**Design Pattern**:
+
 - **Template Method**: Abstract class với method `message()` chung
 
 **Phương thức**:
+
 - `message(String)`: Set error message (fluent)
 - `abstract Config getConfig()`: Subclass implement để tạo Config
 
 ---
 
 #### `NotNullDefinition.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Programmatic definition cho NotNull constraint
 - Tạo NotNullConfig object
 
-**Sử dụng**: 
+**Sử dụng**:
+
 - Với ConstraintBuilder trong programmatic API
 
 ---
@@ -283,24 +344,31 @@ private String name;
 ### 📁 `converters/` - Annotation to Config Converters
 
 #### `AnnotationToConfigConverter.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Interface cho việc convert annotation → Config
 - Generic interface với type parameter
 
-**Design Pattern**: 
+**Design Pattern**:
+
 - **Factory Pattern**: Interface cho factory methods
 
 **Phương thức**:
+
 - `Config convert(T annotation)`: Convert annotation thành Config
 
 ---
 
 #### `NotNullToConfigConverter.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Convert `@NotNull` annotation thành `NotNullConfig`
 - Extract message từ annotation
 
 **Implementation**:
+
 ```java
 public Config convert(NotNull annotation) {
     return new NotNullConfig(annotation.message());
@@ -310,22 +378,28 @@ public Config convert(NotNull annotation) {
 ---
 
 #### `AnnotationToConfigConverterRegistry.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Registry lưu trữ mapping: Annotation Class → Converter
 - Singleton static registry
 
-**Design Pattern**: 
+**Design Pattern**:
+
 - **Registry Pattern**: Map-based registry
 - **Singleton Pattern**: Static registry instance
 
 **Thuộc tính**:
+
 - `Map<Class<? extends Annotation>, AnnotationToConfigConverter> registry`
 
 **Phương thức**:
+
 - `register(Class<Annotation>, Converter)`: Đăng ký converter
 - `getConverter(Class<Annotation>)`: Lấy converter
 
 **Static initialization**:
+
 ```java
 static {
     register(NotNull.class, new NotNullToConfigConverter());
@@ -338,31 +412,39 @@ static {
 ### 📁 `validators/` - Validation Engine
 
 #### `IValidator.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Interface cho validation service
 - Định nghĩa public API của framework
 
 **Phương thức**:
+
 - `ValidationViolation validate(Object)`: Validate toàn bộ object
 - `ValidationViolation validateProperty(Object, String)`: Validate một field cụ thể
 
 ---
 
 #### `Validator.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Core validation engine
 - Orchestrate toàn bộ quá trình validation
 - Kết hợp ConfigProvider và ConstraintValidators
 
-**Design Pattern**: 
+**Design Pattern**:
+
 - **Strategy Pattern**: Sử dụng các ConstraintValidator strategies
 - **Facade Pattern**: Đơn giản hóa interface cho complex validation subsystem
 
 **Dependencies**:
+
 - `ConfigProvider`: Lấy validation configs
 - `IConstraintViolationNotifier`: Thông báo violations
 
 **Quy trình validation**:
+
 1. Lấy configs từ ConfigProvider
 2. Với mỗi FieldConfig:
    - Get field value qua reflection
@@ -375,22 +457,28 @@ static {
 ---
 
 #### `ValidatorRegistry.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Registry mapping Config class → ConstraintValidator class
 - Lookup validator tại runtime
 
-**Design Pattern**: 
+**Design Pattern**:
+
 - **Registry Pattern**: Map-based registry
 - **Singleton Pattern**: Static registry
 
 **Thuộc tính**:
+
 - `Map<Class<? extends Config>, Class<? extends ConstraintValidator>> registry`
 
 **Phương thức**:
+
 - `register(Class<Config>, Class<Validator>)`: Đăng ký validator
 - `get(Class<Config>)`: Lấy validator class
 
 **Static initialization**:
+
 ```java
 static {
     register(NotNullConfig.class, NotNullValidator.class);
@@ -403,29 +491,37 @@ static {
 #### 📁 `validators/constraintvalidators/` - Validator Implementations
 
 #### `ConstraintValidator.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Interface cho tất cả constraint validators
 - Generic interface với Config và Value type
 
-**Design Pattern**: 
+**Design Pattern**:
+
 - **Strategy Pattern**: Strategy interface cho validation algorithms
 
 **Type Parameters**:
+
 - `C extends Config`: Loại config
 - `T`: Loại giá trị cần validate
 
 **Phương thức**:
+
 - `default initialize(C config)`: Khởi tạo validator với config (optional)
 - `boolean isValid(T value)`: Kiểm tra giá trị có hợp lệ không
 
 ---
 
 #### `NotNullValidator.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Validate giá trị không null
 - Concrete implementation của ConstraintValidator
 
 **Implementation**:
+
 ```java
 public class NotNullValidator implements ConstraintValidator<NotNullConfig, Object> {
     @Override
@@ -440,20 +536,23 @@ public class NotNullValidator implements ConstraintValidator<NotNullConfig, Obje
 ### 📁 `entities/` - Example Domain Models
 
 #### `User.java` và `Credential.java`
-**Chức năng**: 
+
+**Chức năng**:
+
 - Example entities sử dụng framework
 - Demonstrate cách sử dụng annotations
 
 **Ví dụ**:
+
 ```java
 public class Credential {
     @NotNull(message = "Username must not be null")
     @NotEmpty(message = "Username must not be empty")
     @Size(min = 5, max = 20, message = "Username must be 5-20 chars")
     private String username;
-    
+
     @NotNull(message = "Password required")
-    @Pattern(regex = "^(?=.*[A-Z])(?=.*[0-9]).*$", 
+    @Pattern(regex = "^(?=.*[A-Z])(?=.*[0-9]).*$",
              message = "Password must contain uppercase and number")
     private String password;
 }
@@ -463,33 +562,35 @@ public class Credential {
 
 ### 📁 `Main.java` - Entry Point
 
-**Chức năng**: 
+**Chức năng**:
+
 - Demo application
 - Showcase framework capabilities
 
 **Typical setup**:
+
 ```java
 public static void main(String[] args) {
     // Setup providers
     AnnotationConfigProvider annotationProvider = new AnnotationConfigProvider();
     ProgrammaticConfigProvider programmaticProvider = new ProgrammaticConfigProvider();
-    
+
     // Setup builder
     ConstraintBuilder builder = new ConstraintBuilder(programmaticProvider);
     builder.on(User.class)
            .constraints("email", new EmailDefinition())
            .build();
-    
+
     // Create cached provider
     CachedConfigProvider cachedProvider = new CachedConfigProvider(
         List.of(annotationProvider, programmaticProvider)
     );
-    
+
     // Create validator
     IValidator validator = new Validator(cachedProvider, violations -> {
         System.out.println("Violations: " + violations.getViolations());
     });
-    
+
     // Validate
     User user = new User();
     ValidationViolation result = validator.validate(user);
@@ -504,7 +605,7 @@ public static void main(String[] args) {
 
 ```
 Annotation-based:
-Class with @Annotations 
+Class with @Annotations
     → AnnotationConfigProvider.getConfig()
     → AnnotationToConfigConverterRegistry.getConverter()
     → AnnotationToConfigConverter.convert()
@@ -580,9 +681,9 @@ public class EmailDefinition extends ConstraintDefinition {
 
 // 4. Validator
 public class EmailValidator implements ConstraintValidator<EmailConfig, String> {
-    private static final Pattern EMAIL_PATTERN = 
+    private static final Pattern EMAIL_PATTERN =
         Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
-    
+
     @Override
     public boolean isValid(String value) {
         return value == null || EMAIL_PATTERN.matcher(value).matches();
@@ -596,52 +697,3 @@ public class EmailToConfigConverter implements AnnotationToConfigConverter<Email
         return new EmailConfig(annotation.message());
     }
 }
-
-// 6. Registration (in static blocks)
-AnnotationToConfigConverterRegistry.register(Email.class, new EmailToConfigConverter());
-ValidatorRegistry.register(EmailConfig.class, EmailValidator.class);
-```
-
----
-
-## Ưu Điểm Của Kiến Trúc
-
-1. **Separation of Concerns**: Mỗi package có trách nhiệm rõ ràng
-2. **Open/Closed Principle**: Dễ mở rộng validation mới mà không sửa code cũ
-3. **Dependency Inversion**: Phụ thuộc vào abstractions (interfaces)
-4. **Single Responsibility**: Mỗi class có một nhiệm vụ cụ thể
-5. **Flexibility**: Hỗ trợ cả annotation và programmatic API
-6. **Performance**: Caching giảm overhead
-7. **Composability**: Kết hợp nhiều validations dễ dàng
-
----
-
-## Các Pattern Được Sử Dụng - Tổng Kết
-
-| Pattern | Vị Trí | Mục Đích |
-|---------|--------|----------|
-| **Strategy** | ConstraintValidator, ConfigProvider | Thuật toán validation linh hoạt |
-| **Registry** | ValidatorRegistry, ConverterRegistry | Lookup validators/converters |
-| **Builder** | ConstraintBuilder | Fluent API construction |
-| **Decorator** | CachedConfigProvider | Thêm caching layer |
-| **Composite** | FieldConfig (Set<Config>) | Kết hợp nhiều constraints |
-| **Template Method** | ConstraintDefinition | Skeleton cho definitions |
-| **Factory** | AnnotationToConfigConverter | Tạo Config từ Annotation |
-| **Observer** | IConstraintViolationNotifier | Thông báo violations |
-| **Facade** | Validator | Đơn giản hóa validation subsystem |
-| **Singleton** | Registries (static) | Single instance cho registries |
-
----
-
-## TODO - Cần Implement
-
-Các constraint còn thiếu cần implement theo pattern tương tự NotNull:
-
-- [ ] **NotEmpty**: Validator, Config, Definition, Converter
-- [ ] **Size**: Validator, Config, Definition, Converter
-- [ ] **Email**: Validator, Config, Definition, Converter
-- [ ] **Min**: Validator, Config, Definition, Converter
-- [ ] **Max**: Validator, Config, Definition, Converter
-- [ ] **Pattern**: Validator, Config, Definition, Converter
-
-Mỗi constraint cần 4 components và 2 registrations như đã mô tả ở phần Extensibility.
