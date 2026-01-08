@@ -1,4 +1,3 @@
-
 # Hướng dẫn thêm 1 annotation validation mới
 
 Tài liệu này hướng dẫn cách thêm **một annotation validate mới** (annotation-based) vào project.
@@ -16,8 +15,8 @@ Khi bạn gọi `validator.validate(obj)`, provider `AnnotationClassValidatorPro
 3. Với mỗi annotation:
    - Nếu là `@IsValid`: validate nested object (đệ quy)
    - Ngược lại: lấy `ConstraintValidator` từ `ConstraintValidatorRegistry` theo cặp:
-	 - `annotationType` (class của annotation)
-	 - `fieldType` (kiểu của field)
+   - `annotationType` (class của annotation)
+   - `fieldType` (kiểu của field)
 4. Gọi `validator.initialize(attributes)` để truyền các attribute của annotation
 5. Gọi `validator.validate(value)` để lấy message lỗi (nếu có)
 
@@ -145,7 +144,7 @@ u.setCode("ABC");
 
 List<ValidationViolation> violations = validator.validate(u);
 ```
-
+11234565432345654345654345
 ---
 
 ## 4) Thêm annotation cho nhiều kiểu dữ liệu
@@ -209,4 +208,3 @@ Ví dụ:
 Sau khi thêm annotation mới, hãy cập nhật:
 
 - `SUPPORTED_FEATURES.md`: thêm constraint mới vào bảng + mô tả type/params/null-handling.
-
