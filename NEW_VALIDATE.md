@@ -5,30 +5,6 @@ Tài liệu này hướng dẫn cách **thêm một validation constraint mới*
 1. **Annotation-based**: gắn annotation lên field
 2. **Programmatic**: khai báo bằng `ConstraintBuilder` + `*Definition`
 
-Trong codebase hiện tại, một constraint thường gồm 4 phần:
-
-1. **Annotation**: `src/main/java/org/example/constraints/annotation/*.java`
-2. **Definition (programmatic)**: `src/main/java/org/example/constraints/definition/*.java`
-3. **Validator implementation**: `src/main/java/org/example/constraints/validators/*.java`
-4. **Đăng ký vào registry**: `src/main/java/org/example/constraints/validators/ConstraintValidatorRegistry.java`
-
----
-
-## 1) Luồng hoạt động (để hiểu trước khi thêm)
-
-### Annotation-based
-
-- `AnnotationClassValidatorProvider` quét tất cả field annotations.
-- Mỗi annotation (trừ `@IsValid`) sẽ được map sang `ConstraintValidator` thông qua `ConstraintValidatorRegistry.getInstance(annotationType, fieldType)`.
-- Provider gọi `validator.initialize(attributes)` lấy attributes từ annotation (via reflection), rồi gọi `validator.validate(value)`.
-
-### Programmatic
-
-- Bạn tạo các `ConstraintDefinition` (ví dụ `MinDefinition`, `SizeDefinition`), gắn vào field bằng `ConstraintBuilder`.
-- `ProgrammaticClassValidatorProvider` chuyển các `ConstraintDefinition` sang `ConstraintValidator` cũng qua `ConstraintValidatorRegistry`.
-
----
-
 ## 2) Checklist: thêm constraint mới cần làm gì?
 
 Để thêm constraint mới **đầy đủ** (annotation + programmatic), bạn làm theo checklist sau:
@@ -174,7 +150,7 @@ new ConstraintBuilder(programmatic)
 	.build();
 ```
 
----
+---đấgadgadgadgadsgádgádg
 
 ## 4) Thêm constraint cho nhiều kiểu dữ liệu (Collection/Map/Array)
 
